@@ -1,0 +1,118 @@
+@font-face {
+    font-family: "Vazir";
+    src: url("../fonts/Vazir.eot");
+    src: url("../fonts/Vazir.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/Vazir.woff2") format("woff2"),
+    url("../fonts/Vazir.woff") format("woff"),
+    url("../fonts/Vazir.ttf") format("truetype");
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: "Vazir";
+    font-size: 81.25%;
+    line-height: 1.69231em;
+}
+
+body {
+    font-family: "Vazir";
+}
+
+p, time {
+    color: #fff !important;
+}
+
+.container {
+    max-width: 1060px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#shortcuts {
+    padding: 3px 0;
+    background-color: #474f57;
+    box-shadow: 0 3px 4px -2px rgb(0 0 0 / 80%);
+}
+
+#shortcuts a, #main-menu a {
+    color: #fff;
+    text-decoration: none;
+    position: relative;
+    padding: 0 10px;
+}
+
+#shortcuts a:hover, #main-menu a:hover {
+    color: #ff9b00;
+}
+
+#shortcut-menu a:after {
+    position: absolute;
+    top: calc(50% - 4px);
+    left: 0;
+    width: 1px;
+    height: 8px;
+    background-color: #666;
+    content: "";
+}
+
+#header {
+    background-color: #2c3136;
+    box-shadow: 0 3px 4px -2px rgb(0 0 0 / 80%);
+    margin-bottom: 10px;
+}
+
+#header .logo {
+    height: 60px;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#main-menu {
+    margin-top: unset !important;
+    height: 60px;
+    display: flex;
+    align-content: center;
+    flex-direction: row;
+    align-items: center;
+}
+
+.v2-column-utility {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    height: 60px;
+    padding-left: 5px;
+    gap: 7px;
+}
+
+.v2-column-utility #block-about-avatar {
+    margin-top: unset !important;
+}
+
+#header .col-4 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.notice-deliver {
+    width: 34px;
+    height: 34px;
+    background-color: #181a1d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.bi-chat-dots-fill, .bi-list-task, .bi-person-fill {
+    color: #474f57;
+}
