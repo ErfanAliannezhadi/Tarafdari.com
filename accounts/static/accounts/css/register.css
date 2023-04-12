@@ -1,0 +1,36 @@
+#tabs {
+    background-color: #474f57;
+    color: #fff;
+
+}
+
+#tabs div {
+    display: flex;
+    flex-direction: row;
+}
+#tabs div a {
+    display: block;
+    padding-left: 6px;
+    padding-right: 6px;
+    line-height: 0;
+}
+
+#tabs div a:nth-child(2){
+    display: inline-block;
+    background-color: #27bcc9 !important;
+}
+
+#page-user {
+    background-color: #fff;
+    color: #474f57;
+}
+#page-user p {
+    color: #474f57 !important;
+}
+
+#page-user button {
+    background-color: #27bcc9;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
