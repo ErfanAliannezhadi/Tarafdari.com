@@ -14,15 +14,21 @@
     padding-right: 6px;
     line-height: 0;
 }
-
-#tabs div a:nth-child(2){
-    display: inline-block;
-    background-color: #27bcc9 !important;
-}
-
-#user-register-section .container{
+#page-user {
     background-color: #fff;
+    color: #474f57;
 }
+#page-user p {
+    color: #474f57 !important;
+}
+
+#page-user button {
+    background-color: #27bcc9;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
 form input{
     width: 100%;
     padding: 0 10px;
@@ -35,14 +41,11 @@ form input{
 }
 
 form button {
-    width: 100%;
+        width: 100%;
     line-height: 44px;
-    padding: 0 40px;
-    float: left;
     border: none;
     outline: none;
-    border-radius: 4px;
-    background-color: #ff9b00;
+    background-color: #ff9b00 !important;
     color: #fff;
 }
 

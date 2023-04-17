@@ -1,28 +1,36 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block stylesheet %}
-    <link rel="stylesheet" href="{% static 'accounts/css/register.css' %}"></link>
+    <link rel="stylesheet" href="{% static 'accounts/css/register.css' %}">
 {% endblock %}
 {% block body %}
     <section id="tabs" class="container my-3 py-4">
         <div class="d-flex flex-row">
-            <a href="">ایجاد اکانت جدید</a>
+            <a href="{% url 'accounts:register' %}">ایجاد اکانت جدید</a>
             <a href="{% url 'accounts:login' %}">ورود</a>
             <a href="">درخواست کلمه عبور جدید</a>
         </div>
     </section>
-    <section id="page-user" class="container my-3">
-        <div class="row">
-            <div class="col-6 text-center">
-                <p class="pt-3 fs-5">عضو جدید هستید؟</p>
-                <p class="text-muted">برای پیوستن به طرفداری عضو شوید.</p>
-                <button class="w-50 py-3">عضویت در طرفداری</button>
-                <p class="w-75 mx-auto mt-3">پس از ثبت نام میتوانید روی مطالب نظر دهید، در شبکه اجتماعی فعالیت کنید و از امکانات دیگر
-                    طرفداری استفاده کنید.</p>
+    <section id="user-register-section">
+    <div class="container py-3">
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="row pb-3">
+            <div class="col-4">
+                {{ field.label }}
             </div>
-            <div class="col-6">
-
+            <div class="col-8">
+                {{ field }}
             </div>
+            </div>
+        {% endfor %}
+    <div class="row">
+        <div class="col-8 offset-4">
+            <button type="submit">ایجاد اکانت جدید</button>
         </div>
+    </div>
+    </form>
+    </div>
     </section>
 {% endblock %}

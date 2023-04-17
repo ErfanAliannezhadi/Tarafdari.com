@@ -49,11 +49,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     cover_image = models.ImageField(blank=True, null=True)
     background_image = models.ImageField(blank=True, null=True)
     is_private = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_auther = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     registration_date = models.DateField(auto_now_add=True)
-    last_active = models.DateTimeField(auto_now=True)
 
     objects = UserManager()
 
