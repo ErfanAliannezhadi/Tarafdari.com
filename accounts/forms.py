@@ -3,8 +3,10 @@ from .models import User
 
 
 class UserRegisterForm(forms.ModelForm):
-    password1 = forms.CharField(label='رمز عبور', widget=forms.PasswordInput())
-    password2 = forms.CharField(label='تکرار رمز عبور', widget=forms.PasswordInput())
+    password1 = forms.CharField(label='رمز عبور', widget=forms.PasswordInput(),
+                                error_messages={'required': 'رمز عبور الزامی است'})
+    password2 = forms.CharField(label='تکرار رمز عبور', widget=forms.PasswordInput(),
+                                error_messages={'required': 'رمز عبور الزامی است'})
 
     class Meta:
         model = User
@@ -15,10 +17,18 @@ class UserRegisterForm(forms.ModelForm):
             'phone_number': 'موبایل',
             'email': 'ایمیل',
         }
+        error_messages = {
+            'first_name': {'required': 'نام الزامی است'},
+            'last_name': {'required': 'نام خانوادگی الزامی است'},
+            'phone_number': {'required': 'شماره تلفن الزامی است'},
+            'email': {'required': 'ایمیل الزامی است'}
+        }
 
     def clean(self):
         cd = super().clean()
-        if cd['password1'] and cd['password2'] and (cd['password1'] != cd['password2']):
+        p1 = cd.get('password1')
+        p2 = cd.get('password2')
+        if p1 and p2 and (p1 != p2):
             raise forms.ValidationError('رمز عبور نادرست میباشد')
         return cd
 

@@ -34,6 +34,9 @@ a {
     color: #fff;
 }
 a:hover {
+    color: unset;
+}
+footer a:hover{
     color: #ff9b00;
 }
 

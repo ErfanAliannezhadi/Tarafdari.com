@@ -4,33 +4,43 @@
     <link rel="stylesheet" href="{% static 'accounts/css/register.css' %}">
 {% endblock %}
 {% block body %}
-    <section id="tabs" class="container my-3 py-4">
-        <div class="d-flex flex-row">
-            <a href="{% url 'accounts:register' %}">ایجاد اکانت جدید</a>
-            <a href="{% url 'accounts:login' %}">ورود</a>
-            <a href="">درخواست کلمه عبور جدید</a>
+    {% if form.errors %}
+        <div id="form-errors" class="container my-3">
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                {% if field.errors %}
+                    {{ field.errors }}
+                {% endif %}
+            {% endfor %}
         </div>
+    {% endif %}
+    <section id="tabs" class="container my-3 px-0">
+        <ul class="d-flex flex-row">
+            <li class="px-2 active"><a href="{% url 'accounts:register' %}">ایجاد اکانت جدید</a></li>
+            <li class="px-2"><a href="{% url 'accounts:login' %}">ورود</a></li>
+            <li class="px-2"><a href="">درخواست کلمه عبور جدید</a></li>
+        </ul>
     </section>
     <section id="user-register-section">
-    <div class="container py-3">
-    <form action="" method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="row pb-3">
-            <div class="col-4">
-                {{ field.label }}
-            </div>
-            <div class="col-8">
-                {{ field }}
-            </div>
-            </div>
-        {% endfor %}
-    <div class="row">
-        <div class="col-8 offset-4">
-            <button type="submit">ایجاد اکانت جدید</button>
+        <div class="container py-3">
+            <form action="" method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="row pb-3">
+                        <div class="col-4">
+                            {{ field.label }}
+                        </div>
+                        <div class="col-8">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row">
+                    <div class="col-8 offset-4">
+                        <button type="submit">ایجاد اکانت جدید</button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </div>
-    </form>
-    </div>
     </section>
 {% endblock %}

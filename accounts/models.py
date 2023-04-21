@@ -40,19 +40,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     This is the User Model of Tarafdari.com
     """
     id = models.BigAutoField(primary_key=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=11, unique=True)
-    about_me = models.TextField(blank=True, null=True)
-    profile_image = models.ImageField(blank=True, null=True)
-    cover_image = models.ImageField(blank=True, null=True)
-    background_image = models.ImageField(blank=True, null=True)
+    first_name = models.CharField(max_length=255, verbose_name='نام')
+    last_name = models.CharField(max_length=255, verbose_name='نام خانوادگی')
+    email = models.EmailField(unique=True, verbose_name='ایمیل')
+    phone_number = models.CharField(max_length=11, unique=True, verbose_name='شماره تلفن')
+    about_me = models.TextField(blank=True, null=True, verbose_name='درباره ی من')
+    profile_image = models.ImageField(blank=True, null=True,verbose_name='عکس پروفایل')
+    cover_image = models.ImageField(blank=True, null=True,verbose_name='عکس کاور')
+    background_image = models.ImageField(blank=True, null=True,verbose_name='عکس بکگراند')
     is_private = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_auther = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    registration_date = models.DateField(auto_now_add=True)
+    registration_date = models.DateField(auto_now_add=True, verbose_name='تاریخ عضویت')
+
+    class Meta:
+        verbose_name = 'کاربر'
 
     objects = UserManager()
 

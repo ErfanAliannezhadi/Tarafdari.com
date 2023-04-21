@@ -1,23 +1,29 @@
-#tabs {
+#form-errors {
+    background-color: #fef5f1;
+    color: #8c2e0b;
+    background-position: 99% 8px;
+    padding: 10px 50px 10px 10px;
+    border:1px solid #ed541d;
+}
+
+#tabs ul {
+    overflow: hidden;
+    *zoom: 1;
+    line-height: 34px;
     background-color: #474f57;
     color: #fff;
-
+    padding-right: 0px;
 }
 
-#tabs div {
-    display: flex;
-    flex-direction: row;
-}
-#tabs div a {
-    display: block;
-    padding-left: 6px;
-    padding-right: 6px;
-    line-height: 0;
+#tabs ul li {
+    margin: 0;
+    padding: 0;
+    border: none !important;
+    list-style: none;
 }
 
-#tabs div a:nth-child(2){
-    display: inline-block;
-    background-color: #27bcc9 !important;
+#tabs ul li.active {
+    background-color: #27bcc9;
 }
 
 #user-register-section .container{
