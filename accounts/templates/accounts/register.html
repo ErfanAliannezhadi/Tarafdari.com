@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}عضویت | طرفداری{% endblock %}
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static 'accounts/css/register.css' %}">
 {% endblock %}
@@ -18,7 +19,7 @@
         <ul class="d-flex flex-row">
             <li class="px-2 active"><a href="{% url 'accounts:register' %}">ایجاد اکانت جدید</a></li>
             <li class="px-2"><a href="{% url 'accounts:login' %}">ورود</a></li>
-            <li class="px-2"><a href="">درخواست کلمه عبور جدید</a></li>
+            <li class="px-2"><a href="{% url 'accounts:password_reset' %}">درخواست کلمه عبور جدید</a></li>
         </ul>
     </section>
     <section id="user-register-section">

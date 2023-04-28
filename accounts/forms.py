@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import UserModel
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -9,7 +9,7 @@ class UserRegisterForm(forms.ModelForm):
                                 error_messages={'required': 'رمز عبور الزامی است'})
 
     class Meta:
-        model = User
+        model = UserModel
         fields = ('first_name', 'last_name', 'phone_number', 'email')
         labels = {
             'first_name': 'نام',

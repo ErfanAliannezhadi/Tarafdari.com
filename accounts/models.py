@@ -1,5 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.urls import reverse
+
+
+def user_profile_image_path(instance, filename):
+    return f'accounts/user_{instance.id}/profile_image/{filename}'
+
+
+def user_cover_image_path(instance, filename):
+    return f'accounts/user_{instance.id}/cover_image/{filename}'
+
+
+def user_background_image_path(instance, filename):
+    return f'accounts/user_{instance.id}/background_image/{filename}'
 
 
 class UserManager(BaseUserManager):
@@ -35,19 +48,21 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class UserModel(AbstractBaseUser, PermissionsMixin):
     """
     This is the User Model of Tarafdari.com
     """
     id = models.BigAutoField(primary_key=True)
-    first_name = models.CharField(max_length=255, verbose_name='نام')
-    last_name = models.CharField(max_length=255, verbose_name='نام خانوادگی')
+    first_name = models.CharField(max_length=10, verbose_name='نام')
+    last_name = models.CharField(max_length=10, verbose_name='نام خانوادگی')
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     phone_number = models.CharField(max_length=11, unique=True, verbose_name='شماره تلفن')
     about_me = models.TextField(blank=True, null=True, verbose_name='درباره ی من')
-    profile_image = models.ImageField(blank=True, null=True,verbose_name='عکس پروفایل')
-    cover_image = models.ImageField(blank=True, null=True,verbose_name='عکس کاور')
-    background_image = models.ImageField(blank=True, null=True,verbose_name='عکس بکگراند')
+    profile_image = models.ImageField(blank=True, null=True, verbose_name='عکس پروفایل',
+                                      upload_to=user_profile_image_path, default='defaults/avatar-default.png')
+    cover_image = models.ImageField(blank=True, null=True, verbose_name='عکس کاور', upload_to=user_cover_image_path)
+    background_image = models.ImageField(blank=True, null=True, verbose_name='عکس بکگراند',
+                                         upload_to=user_background_image_path)
     is_private = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_auther = models.BooleanField(default=False)
@@ -65,3 +80,28 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+
+    @property
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    def get_absolute_url(self):
+        return reverse('accounts:profile', kwargs={'pk': self.id})
+
+    def __str__(self):
+        return f'{self.full_name} - {self.email} - {self.phone_number}'
+
+
+class FollowModel(models.Model):
+    from_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='followers')
+    to_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='followings')
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'دنبال کردن'
+        unique_together = ['from_user', 'to_user']
+        constraints = [models.CheckConstraint(check=~(models.Q(from_user=models.F('to_user'))),
+                                              name='any_one_cant_follows_it_self')]
+
+    def __str__(self):
+        return f'{self.from_user.full_name} follows {self.to_user.full_name}'
