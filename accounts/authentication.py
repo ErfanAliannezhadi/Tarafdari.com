@@ -1,18 +1,18 @@
-from .models import User
+from .models import UserModel
 
 
 class PhoneNumberBackend:
     def authenticate(self, request, username=None, password=None):
         try:
-            user = User.objects.get(phone_number=username)
+            user = UserModel.objects.get(phone_number=username)
             if user.check_password(password):
                 return user
             return None
-        except User.DoesNotExist:
+        except UserModel.DoesNotExist:
             return None
 
     def get_user(self, user_id):
         try:
-            return User.objects.get(id=user_id)
-        except User.DoesNotExist:
+            return UserModel.objects.get(id=user_id)
+        except UserModel.DoesNotExist:
             return None

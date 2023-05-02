@@ -4,15 +4,15 @@ from django.urls import reverse
 
 
 def user_profile_image_path(instance, filename):
-    return f'accounts/user_{instance.id}/profile_image/{filename}'
+    return f'accounts/user_{instance.pk}/profile_image/{filename}'
 
 
 def user_cover_image_path(instance, filename):
-    return f'accounts/user_{instance.id}/cover_image/{filename}'
+    return f'accounts/user_{instance.pk}/cover_image/{filename}'
 
 
 def user_background_image_path(instance, filename):
-    return f'accounts/user_{instance.id}/background_image/{filename}'
+    return f'accounts/user_{instance.pk}/background_image/{filename}'
 
 
 class UserManager(BaseUserManager):
@@ -52,22 +52,22 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     """
     This is the User Model of Tarafdari.com
     """
-    id = models.BigAutoField(primary_key=True)
     first_name = models.CharField(max_length=10, verbose_name='نام')
     last_name = models.CharField(max_length=10, verbose_name='نام خانوادگی')
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     phone_number = models.CharField(max_length=11, unique=True, verbose_name='شماره تلفن')
     about_me = models.TextField(blank=True, null=True, verbose_name='درباره ی من')
     profile_image = models.ImageField(blank=True, null=True, verbose_name='عکس پروفایل',
-                                      upload_to=user_profile_image_path, default='defaults/avatar-default.png')
+                                      upload_to=user_profile_image_path)
     cover_image = models.ImageField(blank=True, null=True, verbose_name='عکس کاور', upload_to=user_cover_image_path)
-    background_image = models.ImageField(blank=True, null=True, verbose_name='عکس بکگراند',
+    background_image = models.ImageField(blank=True, null=True, verbose_name='عکس پس زمینه',
                                          upload_to=user_background_image_path)
-    is_private = models.BooleanField(default=False)
+    is_private = models.BooleanField(default=False, verbose_name='خصوصی')
     is_active = models.BooleanField(default=True)
     is_auther = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     registration_date = models.DateField(auto_now_add=True, verbose_name='تاریخ عضویت')
+    last_online = models.DateTimeField(verbose_name='آخرین انلاین', blank=True, null=True)
 
     class Meta:
         verbose_name = 'کاربر'

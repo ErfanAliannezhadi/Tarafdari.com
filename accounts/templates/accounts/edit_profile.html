@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}ویرایش پروفایل | طرفداری{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'accounts/css/edit_profile.css' %}">
+{% endblock %}
+{% block body %}
+    {# block form errors #}
+    {% if form.errors %}
+        <div id="form-errors" class="container my-3">
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                {% if field.errors %}
+                    {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    {# endblock form errors #}
+    {# block tabs #}
+    <section id="tabs" class="container my-3">
+        <ul class="d-flex flex-row">
+            <li class="px-2"><a href="{{ user.get_absolute_url }}">مشاهده</a></li>
+            <li class="px-2"><a href="">استاتوس ها</a></li>
+            <li class="px-2"><a href="">مسدود ها</a></li>
+            <li class="px-2 active"><a href="{% url 'accounts:edit_profile' %}">ویرایش پروفایل</a></li>
+            <li class="px-2"><a href="{% url 'accounts:change_password' %}">تغییر رمز</a></li>
+            <li class="px-2"><a href="">فالو ریکوئست ها</a></li>
+            <li class="px-2"><a href="">پیام های خصوصی</a></li>
+            <li class="px-2"><a href="">تایید موبایل</a></li>
+        </ul>
+    </section>
+    {# endblock tabs #}
+    {# block main #}
+    <section id="main" class="my-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-8">
+                    <form action="" method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        <div class="py-2">
+                            <label>{{ form.first_name.label }}</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="py-2">
+                            <label>{{ form.last_name.label }}</label>
+                            {{ form.last_name }}
+                        </div>
+                        <fieldset>
+                            <legend><span class="fieldset-legend">عکس</span></legend>
+                            <div class="d-flex flex-row justify-content-between">
+                                <div>
+                                    <label>{{ form.profile_image.label }}</label>
+                                    {{ form.profile_image }}
+                                    <p class="text-muted fs-6">صورت یا تصویر مجازی شما. تصاویر بزرگتر از 1024x1024 پیکسل
+                                        کوچک
+                                        می‌شوند.</p>
+                                </div>
+                                <div>
+                                    <span class="user-picture">
+                                        <a href="{{ request.user.get_absolute_url }}">
+                                            <img src="{{ request.user.profile_image.url }}" width="128" height="128"
+                                                 alt="{{ request.user.full_name }}">
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="py-2">
+                            <label>{{ form.cover_image.label }}</label>
+                            {{ form.cover_image }}
+                        </div>
+                        <div class="py-2">
+                            <label>{{ form.background_image.label }}</label>
+                            {{ form.background_image }}
+                        </div>
+                        <div class="py-3">
+                            <label style="display: inline-block">{{ form.is_private.label }}</label>
+                            {{ form.is_private }}
+                            <p class="fs-6 text-muted">در صورت فعال بودن فقط دنبال کنندگان شما قادر به مشاهده‌ی استتوس
+                                های شما خواهند بود و دنبال کردنتان فقط با تایید شما امکان پذیر خواهد بود.
+                            </p>
+                        </div>
+                        <div class="py-2">
+                            <label>{{ form.about_me.label }}</label>
+                            {{ form.about_me }}
+                            <p class="fs-6 text-muted py-1">متن مختصری برای معرفی خود بنویسید، این متن در صفحه پروفایل
+                                شما نمایش داده خواهد شد.
+                            </p>
+                        </div>
+                        <div class="py-2">
+                            <label>{{ form.email.label }}</label>
+                            {{ form.email }}
+                            <p class="fs-6 text-muted py-1">لطفاً از ایمیل های شرکتی (مثل info@example.com) برای ثبت نام
+                                استفاده نکنید و ایمیل را بدون www در ابتدای آن وارد کنید. در صورت فراموشی رمزعبور،
+                                اطلاعات جدید به ایمیل شما ارسال خواهد شد.
+                            </p>
+                        </div>
+                        <div class="py-2 mt-2" style="background-color: #f0f0f0; border-top: 2px solid #27bcc9;">
+                            <button type="submit" class="ms-2">ذخیره</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+    </section>
+    {# endbock main #}
+{% endblock %}

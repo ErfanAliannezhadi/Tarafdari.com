@@ -1,7 +1,9 @@
+from django import forms
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView, View
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, View
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView, \
+    PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -123,3 +125,31 @@ class UserUnfollowView(LoginRequiredMixin, View):
         return JsonResponse({
             'response': 'it is unfollowed'
         })
+
+
+class UserProfileEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    template_name = 'accounts/edit_profile.html'
+    model = UserModel
+    fields = ['first_name', 'last_name', 'profile_image', 'cover_image', 'background_image', 'is_private', 'about_me',
+              'email']
+    success_message = 'اطلاعات شما با موفقیت تغییر کرد'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=None)
+        form.fields['profile_image'].widget = forms.FileInput()
+        return form
+
+
+class UserChangePasswordView(SuccessMessageMixin, PasswordChangeView):
+    template_name = 'accounts/change_password.html'
+    success_message = 'رمز عبور شما با موفقیت تغییر کرد'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=None)
+        form.fields['old_password'].label = 'رمز عبور فعلی'
+        form.fields['new_password1'].label = 'رمز عبور جدید'
+        form.fields['new_password2'].label = 'تایید رمز عبور جدید'
+        return form

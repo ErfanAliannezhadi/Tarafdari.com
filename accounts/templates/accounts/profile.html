@@ -25,8 +25,8 @@
             <li class="px-2"><a href="">استاتوس ها</a></li>
             {% if is_owner %}
                 <li class="px-2"><a href="">مسدود ها</a></li>
-                <li class="px-2"><a href="">ویرایش پروفایل</a></li>
-                <li class="px-2"><a href="">تغییر رمز</a></li>
+                <li class="px-2"><a href="{% url 'accounts:edit_profile' %}">ویرایش پروفایل</a></li>
+                <li class="px-2"><a href="{% url 'accounts:change_password' %}">تغییر رمز</a></li>
                 <li class="px-2"><a href="">فالو ریکوئست ها</a></li>
                 <li class="px-2"><a href="">پیام های خصوصی</a></li>
                 <li class="px-2"><a href="">تایید موبایل</a></li>
