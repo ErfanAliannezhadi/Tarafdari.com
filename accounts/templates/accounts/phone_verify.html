@@ -1,0 +1,33 @@
+{% extends 'accounts/base_profile.html' %}
+{% load static %}
+{% block title %}طرفداری | تایید شماره تلفن{% endblock %}
+{% block other_stylesheet %}
+    <link rel="stylesheet" href="{% static 'accounts/css/phone_verify.css' %}">
+{% endblock %}
+{% block main %}
+    <div class="phone-verify-form py-3 px-3">
+        <form action="" method="post" novalidate>
+            <div class="row py-3">
+                {% for field in form %}
+                    <div class="col-12"><label>{{ field.label }}</label></div>
+                    <div class="col-12">{{ field }}</div>
+                    <div class="text-center">کد اعتبار سنجی 6 رقمی که برای شما ارسال کردیم را وارد کنید.
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex flex-row justify-content-between">
+                <div>
+                    <input id="send-again-button" class="text-center px-3" type="submit" value="ارسال مجدد">
+                </div>
+                <div>
+                    <input id="confirm-button" class="text-center px-3" type="submit" value="تایید شماره موبایل">
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block other_scripts %}
+    <script type="text/javascript">
+        document.querySelector('#tabs ul li:nth-child(8)').className = 'px-2 active'
+    </script>
+{% endblock %}

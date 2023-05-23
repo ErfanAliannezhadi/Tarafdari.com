@@ -1,0 +1,34 @@
+{% extends 'accounts/base_profile.html' %}
+{% load static %}
+{% block title %}طرفداری | درخواست های فالو{% endblock %}
+{% block other_stylesheet %}
+    <link rel="stylesheet" href="{% static 'accounts/css/follow_requests.css' %}">
+{% endblock %}
+{% block main %}
+    <div class="follow-request-list">
+        {% for follower_request in follower_requests %}
+            <div class="follow">
+                            <span>
+                                <a href="{{ follower_request.get_absolute_url }}">
+                                    <img src="{{ follower_request.profile_image.url }}" width="128" height="128">
+                                </a>
+                            </span>
+                <div>
+                    <a href="{{ follower_request.get_absolute_url }}">{{ follower_request.full_name }}</a>
+                </div>
+                <a href="{% url 'accounts:follow_request_decision' follower_request.pk %}?decision=accept"
+                   class="accept-button">قبول</a>
+                <a href="{% url 'accounts:follow_request_decision' follower_request.pk %}?decision=reject"
+                   class="reject-button">حذف</a>
+            </div>
+        {% empty %}
+            <div style="text-align: center;">هیچ فالو ریکوئستی وجود ندارد.</div>
+        {% endfor %}
+
+    </div>
+{% endblock %}
+{% block other_scripts %}
+    <script type="text/javascript">
+        document.querySelector('#tabs ul li:nth-child(6)').className = 'px-2 active'
+    </script>
+{% endblock %}

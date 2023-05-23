@@ -1,0 +1,358 @@
+.user-picture {
+    position: absolute;
+    right: 10px;
+    bottom: -40px;
+    padding: 2px;
+    background-color: #fff;
+    border: 1px solid #999;
+}
+
+#cover-image {
+    position: relative;
+}
+
+#item {
+    overflow: hidden;
+}
+
+#item img {
+    display: block;
+    border: 0;
+}
+
+#tools {
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #d6d6d6;
+    line-height: 48px;
+    font-size: 14px;
+    height: 50px;
+}
+
+#tools-1 h2 {
+    line-height: 48px;
+    padding: 0 10px;
+    margin: 0 140px 0 0
+}
+
+#tools-1 h2 a {
+    font-size: 16px;
+}
+
+#tools-1 h2.online i {
+    background-position: 0 -200px;
+}
+
+#tools a {
+    color: #282e34;
+    text-decoration: none;
+}
+
+#tools-2 a {
+    box-sizing: border-box;
+    padding: 0 10px;
+    height: 48px;
+    float: left;
+    border-right: 1px solid #ebebeb;
+    border-bottom: 4px solid transparent;
+}
+
+#tools-2 a:hover {
+    border-bottom: 4px solid #ff9b00;
+    color: #ff9b00;
+}
+
+.status i {
+    margin-top: 14px;
+    width: 20px;
+    height: 20px;
+    float: right;
+    margin-left: 5px;
+    background-position: 0 -180px
+}
+
+#tools-1 a.update {
+    margin: 0 10px 0 0;
+    width: 140px;
+    float: right;
+    color: #c00;
+    background-color: transparent;
+}
+
+#tools-1 a.update:hover {
+    color: #ff9b00;
+}
+
+#tools-1 i.update-icon {
+    margin-top: 14px;
+    width: 20px;
+    height: 20px;
+    float: right;
+    margin-left: 5px;
+    background-position: 0 -320px
+}
+
+a.follow-button {
+    color: inherit !important;
+    background-color: transparent;
+    height: 48px;
+    line-height: 48px;
+    text-align: right;
+    font-size: 15px;
+    width: 100%;
+    background-position: 98% center;
+    background-repeat: no-repeat;
+    display: block;
+    cursor: pointer;
+}
+
+i.follow-icon {
+    margin-top: 14px;
+    width: 20px;
+    height: 20px;
+    float: right;
+    margin-left: 5px;
+    background-position: 0 -60px;
+}
+
+#main .container .row div .d-flex {
+    background-color: #fff;
+}
+
+#main .container .row div p {
+    color: #474f57 !important;
+}
+
+i.last-online {
+    background-position: 0 -20px;
+    width: 20px;
+    height: 20px;
+    float: right;
+    margin-left: 10px;
+}
+
+i.registration-date {
+    background-position: 0 -40px;
+    width: 20px;
+    height: 20px;
+    float: right;
+    margin-left: 10px;
+}
+
+#emoji-package a {
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 0 0 24px;
+    margin: 0 5px 0 0;
+    background-position: 5px 50%;
+    background-repeat: no-repeat;
+    text-align: center;
+    color: #282e34;
+}
+
+.emoji-heart {
+    background-image: url('https://tarafdari.com/sites/all/themes/hope/images/emoji/heart.png?1668351057');
+}
+
+
+.emoji-heart.selected {
+    background-image: url('https://tarafdari.com/sites/all/themes/hope/images/emoji/heart-selected.png?1668351057');
+}
+
+.emoji-trophy {
+    background-image: url('https://tarafdari.com/sites/all/themes/hope/images/emoji/trophy.png?1668351057');
+}
+
+.emoji-trophy.selected {
+    background-image: url('https://tarafdari.com/sites/all/themes/hope/images/emoji/trophy-selected.png?1668351057');
+}
+
+.emoji-passion {
+    background-image: url('https://tarafdari.com/sites/all/themes/hope/images/emoji/passion.png?1668351057');
+}
+
+.emoji-passion.selected {
+    background-image: url('https://tarafdari.com/sites/all/themes/hope/images/emoji/passion-selected.png?1668351057');
+}
+
+.subscription {
+    margin: 10px 0;
+    background-color: #ff9b00;
+    border-radius: 5px;
+    display: block;
+    padding: 5px;
+    color: #fff !important;
+    text-align: center;
+}
+
+#add-post h2 {
+    cursor: pointer;
+    background-color: #ff9b00;
+    height: 44px;
+    line-height: 44px;
+    margin: 0;
+    padding: 0 10px;
+    background-color: #27bcc9;
+    background-size: 100%;
+    color: #fff;
+    font-size: 14px;
+}
+
+#add-post h2 i {
+    width: 20px;
+    height: 20px;
+    float: right;
+    margin: 12px 0 0 10px;
+    background-position: 0 0;
+}
+
+#add-post h2 a {
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin: 12px 10px 0 0;
+    background-position: 0 -260px;
+    background-size: initial;
+    background-color: transparent;
+}
+
+#add-post div {
+    border: 1px solid #d6d6d6;
+    border-top: none;
+    background-color: #fff;
+}
+
+#add-post div ul {
+    margin: 0;
+    padding: 0;
+}
+
+#add-post div ul li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#add-post div ul li a {
+    font-size: 15px;
+    background-color: #474f57;
+    color: #fff;
+    height: 34px;
+    line-height: 34px;
+    display: block;
+    padding: 0 10px;
+    margin: 0;
+    border-bottom: 1px solid #fff;
+}
+
+#block-followers h2, #block-followings h2, #block-teams h2, #block-posts h2, #block-upload h2, #block-info h2 {
+    height: 44px;
+    line-height: 44px;
+    margin: 0;
+    padding: 0 10px;
+    background-color: #27bcc9;
+    background-size: 100%;
+    color: #fff;
+    font-size: 14px;
+}
+
+#block-followers h2 a, #block-followings h2 a, #block-teams h2 a, #block-posts h2 a, #block-upload h2 a, #block-info h2 a {
+    white-space: nowrap;
+    padding: 0 10px;
+    margin: 10px 3px 0 0;
+    line-height: 24px;
+    float: left;
+    border: none;
+    outline: none;
+    background-color: #ff9b00;
+    background-size: 100%;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 5px;
+    transition-duration: 500ms;
+}
+
+#block-followings div, #block-followers div, #block-teams div, #block-posts div, #block-upload div, #block-info div {
+    padding: 5px;
+    border: 1px solid #d6d6d6;
+    border-top: none;
+    background-color: #fff;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#block-followings div span, #block-followers div span {
+    width: 25%;
+    height: auto;
+    float: right;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+#block-followings div span img, #block-followers div span img {
+    border: 0;
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    display: block;
+}
+
+.follow-request-list {
+    width: 100%;
+    border: 1px solid #d6d6d6;
+    background-color: #fff;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.follow {
+    position: relative;
+    height: 50px;
+}
+
+.follow span a img {
+    border: 0;
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    max-height: 46px;
+}
+
+.follow div {
+    position: absolute;
+    right: 50px;
+    top: 12px;
+}
+
+.follow div a {
+    color: #181a1d;
+}
+
+.follow div a:hover {
+    color: #ff9b00;
+}
+
+.reject-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 10px 0 0 0;
+    background-color: #ff9b00;
+    border-radius: 5px;
+    padding: 5px;
+    color: #fff !important;
+    text-align: center;
+}
+
+.accept-button {
+    position: absolute;
+    left: 50px;
+    top: 0;
+    margin: 10px 0 0 0;
+    background-color: #27bcc9;
+    border-radius: 5px;
+    padding: 5px;
+    color: #fff !important;
+    text-align: center;
+}

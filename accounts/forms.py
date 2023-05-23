@@ -1,5 +1,20 @@
 from django import forms
-from .models import UserModel
+from django.contrib.auth.forms import AuthenticationForm, UsernameField, SetPasswordForm, PasswordChangeForm
+from django.contrib.auth import password_validation
+from .models import UserModel, OTPCodeModel
+from random import randint
+
+
+class UserLoginForm(AuthenticationForm):
+    username = UsernameField(widget=forms.TextInput(attrs={"autofocus": True, 'placeholder': 'ایمیل / موبایل'}),
+                             label='نام کاربری', error_messages={'required': 'نام کاربری اجباری است'})
+    password = forms.CharField(label='رمز عبور', strip=False,
+                               widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
+                               error_messages={'required': 'رمز عبور اجباری است'})
+    error_messages = {
+        'invalid_login': 'رمز عبور یا ایمیل نامعتبر است',
+        'inactive': 'این حساب غیرفعال شده است'
+    }
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -34,8 +49,52 @@ class UserRegisterForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
+        print(user)
         user.email = UserModel.objects.normalize_email(self.cleaned_data['email'])
         user.set_password(self.cleaned_data['password2'])
+        user.is_phone_verified = False
+        # otp_code = OTPCodeModel.objects.update_or_create(user=user, code=randint(100000, 999999))
+        # otp_code.send_otp_code()
         if commit:
             user.save()
         return user
+
+
+class UserPasswordConfirmForm(SetPasswordForm):
+    error_messages = {
+        "password_mismatch": 'دو رمز عبور تطابق ندارند',
+    }
+    new_password1 = forms.CharField(
+        label='رمز عبور جدید',
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+        strip=False,
+        help_text=password_validation.password_validators_help_text_html(),
+    )
+    new_password2 = forms.CharField(
+        label='تایید رمز عبور جدید',
+        strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+    )
+
+
+class UserChangePasswordForm(UserPasswordConfirmForm):
+    error_messages = {
+        **SetPasswordForm.error_messages,
+        "password_incorrect": 'رمز عبور قدیمی شما نامعتبر است'}
+    old_password = forms.CharField(
+        label="رمز عبور فعلی", strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "current-password", "autofocus": True}), )
+
+
+class UserProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = UserModel
+        fields = ['first_name', 'last_name', 'profile_image', 'cover_image', 'background_image', 'is_private',
+                  'about_me', 'email']
+        widgets = {
+            'profile_image': forms.FileInput(),
+        }
+
+
+class UserPhoneVerifyForm(forms.Form):
+    otp_code = forms.CharField(label='کد ارسالی', max_length=6)

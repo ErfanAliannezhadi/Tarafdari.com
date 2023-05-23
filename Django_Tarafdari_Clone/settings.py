@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middlewares.LastOnlineMiddleware',
+    'accounts.middlewares.UserPhoneVerifyMiddleware',
 ]
 
 ROOT_URLCONF = 'Django_Tarafdari_Clone.urls'
@@ -147,3 +148,12 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = 'eidykziajmyfbiwc'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Tarafdari'
+
+# CKEditor
+CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 250,
+    },
+}

@@ -1,6 +1,10 @@
+from django.utils import timezone
 from django.db import models
+from django.db.models import F
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.urls import reverse
+from ckeditor.fields import RichTextField
+from .utils import send_otp_code
 
 
 def user_profile_image_path(instance, filename):
@@ -40,10 +44,11 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, first_name, last_name, email, phone_number, password):
         """
-        This method is like create_user but it creates a superuser!
+        This method is like create_user, but it creates a superuser!
         """
         user = self.create_user(first_name, last_name, email, phone_number, password)
         user.is_admin = True
+        user.is_superuser = True
         user.save()
         return user
 
@@ -56,18 +61,31 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=10, verbose_name='نام خانوادگی')
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     phone_number = models.CharField(max_length=11, unique=True, verbose_name='شماره تلفن')
-    about_me = models.TextField(blank=True, null=True, verbose_name='درباره ی من')
+    about_me = RichTextField(blank=True, null=True, verbose_name='درباره ی من')
     profile_image = models.ImageField(blank=True, null=True, verbose_name='عکس پروفایل',
-                                      upload_to=user_profile_image_path)
-    cover_image = models.ImageField(blank=True, null=True, verbose_name='عکس کاور', upload_to=user_cover_image_path)
+                                      upload_to=user_profile_image_path, default='accounts/defaults/avatar-default.png')
+    cover_image = models.ImageField(blank=True, null=True, verbose_name='عکس کاور', upload_to=user_cover_image_path,
+                                    default='accounts/defaults/cover.jpg')
     background_image = models.ImageField(blank=True, null=True, verbose_name='عکس پس زمینه',
                                          upload_to=user_background_image_path)
     is_private = models.BooleanField(default=False, verbose_name='خصوصی')
     is_active = models.BooleanField(default=True)
     is_auther = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    is_phone_verified = models.BooleanField(default=False)
     registration_date = models.DateField(auto_now_add=True, verbose_name='تاریخ عضویت')
-    last_online = models.DateTimeField(verbose_name='آخرین انلاین', blank=True, null=True)
+    last_online = models.DateTimeField(verbose_name='آخرین انلاین', blank=True, null=True, auto_now_add=True)
+
+    # users relations
+    followings = models.ManyToManyField('self', symmetrical=False, through='FollowModel',
+                                        through_fields=('from_user', 'to_user'), related_name='followers')
+    blocking = models.ManyToManyField('self', symmetrical=False, through='BlockModel',
+                                      through_fields=('from_user', 'to_user'), related_name='blockers')
+    followings_request = models.ManyToManyField('self', symmetrical=False, through='FollowRequestModel',
+                                                through_fields=('from_user', 'to_user'),
+                                                related_name='followers_request')
+    emojis_pack = models.ManyToManyField('self', symmetrical=False, through='EmojiPackageModel',
+                                         through_fields=('from_user', 'to_user'), related_name='packs_emojis')
 
     class Meta:
         verbose_name = 'کاربر'
@@ -88,20 +106,120 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return reverse('accounts:profile', kwargs={'pk': self.id})
 
+    @property
+    def is_online(self):
+        time_difference = timezone.now() - self.last_online
+        return time_difference.total_seconds() < timezone.timedelta(minutes=10).total_seconds()
+
+    @property
+    def number_of_heart_emojis(self):
+        return self.packs.filter(heart=True).count()
+
+    @property
+    def number_of_trophy_emojis(self):
+        return self.packs.filter(trophy=True).count()
+
+    @property
+    def number_of_passion_emojis(self):
+        return self.packs.filter(passion=True).count()
+
     def __str__(self):
         return f'{self.full_name} - {self.email} - {self.phone_number}'
 
 
 class FollowModel(models.Model):
-    from_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='followers')
-    to_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='followings')
+    """
+    A model representing a follower/following relationship between users.
+
+    Attributes:
+        from_user (ForeignKey): The user who is following another user.
+        to_user (ForeignKey): The user who is being followed by another user.
+    """
+    from_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='following_set')
+    to_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='follower_set')
     date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'دنبال کردن'
         unique_together = ['from_user', 'to_user']
-        constraints = [models.CheckConstraint(check=~(models.Q(from_user=models.F('to_user'))),
+        constraints = [models.CheckConstraint(check=~(models.Q(to_user=models.F('from_user'))),
                                               name='any_one_cant_follows_it_self')]
 
     def __str__(self):
         return f'{self.from_user.full_name} follows {self.to_user.full_name}'
+
+
+class FollowRequestModel(models.Model):
+    from_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='self_follow_requests')
+    to_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='other_follow_requests')
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'درخواست دنبال کردن'
+        unique_together = ['from_user', 'to_user']
+        constraints = [models.CheckConstraint(check=~(models.Q(from_user=models.F('to_user'))),
+                                              name='any_one_cant_request_to_follows_it_self')]
+        ordering = ['date']
+
+    def accept(self):
+        FollowModel.objects.create(from_user=self.from_user, to_user=self.to_user)
+        self.delete()
+
+    def reject(self):
+        self.delete()
+
+
+class BlockModel(models.Model):
+    from_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='blocked_by')
+    to_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='blocked_users')
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'بلاک کردن کاربر'
+        unique_together = ['from_user', 'to_user']
+
+    def __str__(self):
+        return f'{self.from_user.full_name} has blocked {self.to_user.full_name}'
+
+
+class EmojiPackageModel(models.Model):
+    """
+    This model represents Emoji Package of users. you can see these emojis in profile page of every user,
+    in the top of about me part.
+    from_user is the user who turn on or turn off emoji package of to_user
+    """
+    from_user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    to_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='packs')
+    heart = models.BooleanField(default=False)
+    trophy = models.BooleanField(default=False)
+    passion = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'پکیج کاربر'
+        unique_together = ['from_user', 'to_user']
+
+    def reverse_heart_emoji(self):
+        self.heart = not self.heart
+        self.save()
+
+    def reverse_trophy_emoji(self):
+        self.trophy = not self.trophy
+        self.save()
+
+    def reverse_passion_emoji(self):
+        self.passion = not self.passion
+        self.save()
+
+    def __str__(self):
+        return f'{self.from_user.full_name} packs {self.to_user.full_name}'
+
+
+class OTPCodeModel(models.Model):
+    """
+    OTP Code for user's phone number verification
+    """
+    user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='otp_code', primary_key=True)
+    code = models.CharField(max_length=6)
+
+    def send_otp_code(self):
+        return send_otp_code(phone_number=self.user.phone_number, code=self.code)

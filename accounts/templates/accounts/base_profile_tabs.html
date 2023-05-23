@@ -1,0 +1,35 @@
+<style>
+    #tabs ul {
+        overflow: hidden;
+        *zoom: 1;
+        line-height: 34px;
+        background-color: #474f57;
+        color: #fff;
+        padding-right: 0;
+    }
+
+    #tabs ul li {
+        margin: 0;
+        padding: 0;
+        border: none !important;
+        list-style: none;
+    }
+
+    #tabs ul li.active {
+        background-color: #27bcc9;
+    }
+</style>
+<section id="tabs" class="container my-3">
+    <ul class="d-flex flex-row">
+        <li class="px-2"><a href="{{ user.get_absolute_url }}">مشاهده</a></li>
+        <li class="px-2"><a href="">استاتوس ها</a></li>
+        {% if is_owner or is_owner is None %}
+            <li class="px-2"><a href="{% url 'accounts:block-report' %}">مسدود ها</a></li>
+            <li class="px-2"><a href="{% url 'accounts:edit_profile' %}">ویرایش پروفایل</a></li>
+            <li class="px-2"><a href="{% url 'accounts:change_password' %}">تغییر رمز</a></li>
+            <li class="px-2"><a href="{% url 'accounts:follow_requests' %}">فالو ریکوئست ها</a></li>
+            <li class="px-2"><a href="">پیام های خصوصی</a></li>
+            <li class="px-2"><a href="{% url 'accounts:phone_verify' %}">تایید موبایل</a></li>
+        {% endif %}
+    </ul>
+</section>

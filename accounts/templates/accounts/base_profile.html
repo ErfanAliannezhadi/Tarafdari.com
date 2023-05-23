@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'accounts/css/base_profile.css' %}">
+    {% block other_stylesheet %}{% endblock %}
+    <style>
+        {% if user.background_image %}
+            body {
+                background: url({{ user.background_image.url }}) no-repeat center center fixed;
+                background-size: cover;
+            }
+        {% endif %}
+
+        i.tarafdari-icons, i.update-icon, i.follow-icon, i.last-online, i.registration-date, #add-post h2 i,
+        #add-post h2 a {
+            background-image: url({% static 'defaults/Tarafdari-icons.png' %});
+            background-repeat: no-repeat;
+        }
+
+        {% if user.is_online %}
+            .status i {
+                background-position: 0 -200px;
+            }
+        {% endif %}
+    </style>
+{% endblock %}
+{% block body %}
+    {# block tabs #}
+    {% include 'accounts/base_profile_tabs.html' %}
+    {# endblock tabs #}
+    {# block page user #}
+    <div id="page-user" class="pb-3">
+        <div class="container">
+            <div id="cover-image" style="position: relative">
+                <div id="item">
+                    <img src="{{ user.cover_image.url }}" width="1050" height="250">
+                </div>
+                <span class="user-picture">
+                <a href="{{ user.get_absolute_url }}" title="مشاهده پروفایل کاربر">
+                        <img src="{{ user.profile_image.url }}" width="128" height="128">
+                </a>
+            </span>
+            </div>
+            <div id="tools" class="d-flex justify-content-between">
+                <div id="tools-1" class="d-flex flex-row carousel">
+                    <h2 class="status">
+                        <a href="{{ user.get_absolute_url }}">{{ user.full_name }}</a>
+                        <i class="tarafdari-icons"></i>
+                    </h2>
+                    <div>
+                        {% if is_owner %}
+                            <a class="update" style="cursor: pointer" href="{% url 'accounts:edit_profile' %}"><i
+                                    class="update-icon"></i>ویرایش پروفایل</a>
+                        {% else %}
+                            <a class="follow-button"><i class="follow-icon"></i>
+                                {% if is_followed %} توقف دنبال کردن
+                                {% elif user.is_private %}
+                                    {% if is_follow_requested %} حذف درخواست
+                                    {% else %} درخواست فالو
+                                    {% endif %}
+                                {% else %} دنبال کن {% endif %}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div id="tools-2">
+                    <a href="">آخرین مطالب</a>
+                    <a href="">ویدیو</a>
+                    <a href="">موزیک</a>
+                    <a href="">تصاویر</a>
+                    {% if is_owner %}
+                        <a href="">خانه</a>
+                    {% else %}
+                        <a href="">گزارش</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {# endblock pageuser #}
+    {# block main #}
+    <section id="main">
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <div class="d-flex flex-column px-3 py-4">
+                        <div id="emoji-package" class="pb-3">
+                            {% if does_selected_emoji.heart %}
+                                <a href="" class="emoji-heart selected">
+                            {% else %}
+                                <a href="" class="emoji-heart">
+                            {% endif %}
+                            {{ user.number_of_heart_emojis }}</a>
+                            {% if does_selected_emoji.trophy %}
+                                <a href="" class="emoji-trophy selected">
+                            {% else %}
+                                <a href="" class="emoji-trophy">
+                            {% endif %}
+                            {{ user.number_of_trophy_emojis }}</a>
+                            {% if does_selected_emoji.passion %}
+                                <a href="" class="emoji-passion selected">
+                            {% else %}
+                                <a href="" class="emoji-passion">
+                            {% endif %}
+                            {{ user.number_of_passion_emojis }}</a>
+                        </div>
+                        <div id="bio-section">
+                            {% if user.about_me %}
+                                {{ user.about_me|safe }}
+                            {% endif %}
+                        </div>
+                        <div>
+                            <div class="py-2">
+                                <i class="last-online"></i>آخرین بازدید {{ user.last_online|timesince }} قبل
+                            </div>
+                            <div class="py-2">
+                                <i class="registration-date"></i>عضویت از {{ user.registration_date|timesince }} قبل
+                            </div>
+                        </div>
+                        <div>
+                            <a href="" class="subscription">اشتراک</a>
+                        </div>
+                    </div>
+                    <div class="my-3" id="add-post">
+                        <h2><i></i><a></a>ارسال مطلب جدید</h2>
+                        <div style="display: none">
+                            <ul>
+                                <li><a href="">کاربر: تصویر</a></li>
+                                <li><a href="">کاربر: صوت</a></li>
+                                <li><a href="">کاربر: سوال</a></li>
+                                <li><a href="">کاربر: مطلب</a></li>
+                                <li><a href="">کاربر: ویدیو</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="block-followings">
+                        <h2>دنبال شوندگان
+                            <a href="">{{ followings_count }}</a>
+                        </h2>
+                        <div class="row">
+                            {% for following in followings %}
+                                <span class="col-4"><a href="{{ following.get_absolute_url }}">
+                                <img src="{{ following.profile_image.url }}" width="128" height="128"
+                                     title="{{ following.full_name }}">
+                            </a></span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div id="block-followers" class="my-3">
+                        <h2>دنبال کنندگان
+                            <a href="">{{ followers_count }}</a>
+                        </h2>
+                        <div class="row">
+                            {% for follower in followers %}
+                                <span class="col-4"><a href="{{ follower.get_absolute_url }}">
+                                <img src="{{ follower.profile_image.url }}" width="128" height="128"
+                                     title="{{ follower.full_name }}">
+                            </a></span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div id="block-teams" class="my-3">
+                        <h2>تیم های مورد علاقه
+                            <a href="">لیست تیم ها</a>
+                        </h2>
+                        <div class="row">
+                        </div>
+                    </div>
+                    <div id="block-posts" class="my-3">
+                        <h2>آخرین مطالب
+                            <a href="">لیست</a>
+                            <a href="">ایجاد</a>
+                        </h2>
+                        <div class="row">
+                        </div>
+                    </div>
+                    <div id="block-upload" class="my-3">
+                        <h2>آخرین فایل ها
+                            <a href="">لیست</a>
+                            <a href="">بارگذاری</a>
+                        </h2>
+                        <div class="row">
+                        </div>
+                    </div>
+                    <div id="block-info" class="my-3">
+                        <h2>عملکرد کاربر
+                        </h2>
+                        <div class="row">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-8">
+                    {% block main %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {# endblock main #}
+{% endblock %}
+
+{% block scripts %}
+    {{ is_owner |json_script:'is_owner' }}
+    {{ is_followed |json_script:'is_followed' }}
+    {{ is_follow_requested|json_script:'is_follow_requested' }}
+    {{ does_selected_emoji.heart|json_script:'selected_heart' }}
+    {{ does_selected_emoji.trophy|json_script:'selected_trophy' }}
+    {{ does_selected_emoji.passion|json_script:'selected_passion' }}
+    {{ user.is_private|json_script:'is_private' }}
+    <script type="text/javascript">
+        const is_owner = JSON.parse(document.getElementById('is_owner').textContent)
+        let is_followed = JSON.parse(document.getElementById('is_followed').textContent)
+        let is_follow_requested = JSON.parse(document.getElementById('is_follow_requested').textContent)
+        const unfollow_url = '{% url 'accounts:user_unfollow' user.pk %}'
+        const follow_url = '{% url 'accounts:user_follow' user.pk %}'
+        let selected_heart = JSON.parse(document.getElementById('selected_heart').textContent)
+        let selected_trophy = JSON.parse(document.getElementById('selected_trophy').textContent)
+        let selected_passion = JSON.parse(document.getElementById('selected_passion').textContent)
+        const reverse_emoji_url = '{% url 'accounts:emoji_package' user.pk %}'
+        const is_private = JSON.parse(document.getElementById('is_private').textContent)
+    </script>
+    <script type="text/javascript" src="{% static 'accounts/js/base_profile.js' %}">
+    </script>
+    {% block other_scripts %}{% endblock %}
+{% endblock %}
