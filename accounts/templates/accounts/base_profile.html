@@ -25,6 +25,20 @@
     </style>
 {% endblock %}
 {% block body %}
+    {# block form errors #}
+    {% if form %}
+        {% if form.errors %}
+            <div id="form-errors" class="container my-3">
+                {{ form.non_field_errors }}
+                {% for field in form %}
+                    {% if field.errors %}
+                        {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+    {# endblock form errors #}
     {# block tabs #}
     {% include 'accounts/base_profile_tabs.html' %}
     {# endblock tabs #}
@@ -52,14 +66,23 @@
                             <a class="update" style="cursor: pointer" href="{% url 'accounts:edit_profile' %}"><i
                                     class="update-icon"></i>ویرایش پروفایل</a>
                         {% else %}
-                            <a class="follow-button"><i class="follow-icon"></i>
-                                {% if is_followed %} توقف دنبال کردن
-                                {% elif user.is_private %}
-                                    {% if is_follow_requested %} حذف درخواست
-                                    {% else %} درخواست فالو
-                                    {% endif %}
-                                {% else %} دنبال کن {% endif %}
-                            </a>
+                            {% if is_followed %}
+                                <a class="follow-button" href="{% url 'accounts:user_unfollow' user.pk %}"><i
+                                        class="follow-icon"></i>توقف دنبال کردن</a>
+                            {% elif user.is_private %}
+                                {% if is_follow_requested %}
+                                    <a class="follow-button"
+                                       href="{% url 'accounts:user_unfollow_request' user.pk %}"><i
+                                            class="follow-icon"></i>حذف درخواست</a>
+
+                                {% else %}<a class="follow-button"
+                                             href="{% url 'accounts:user_follow_requestst' user.pk %}"><i
+                                        class="follow-icon"></i>درخواست فالو</a>
+
+                                {% endif %}
+                            {% else %}<a class="follow-button" href="{% url 'accounts:user_follow' user.pk %}"><i
+                                    class="follow-icon"></i>دنبال کن</a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
@@ -71,7 +94,7 @@
                     {% if is_owner %}
                         <a href="">خانه</a>
                     {% else %}
-                        <a href="">گزارش</a>
+                        <a href="{% url 'accounts:block_report' user.pk %}">گزارش</a>
                     {% endif %}
                 </div>
             </div>
@@ -86,21 +109,25 @@
                     <div class="d-flex flex-column px-3 py-4">
                         <div id="emoji-package" class="pb-3">
                             {% if does_selected_emoji.heart %}
-                                <a href="" class="emoji-heart selected">
+                                <a href="{% url 'accounts:emoji_package' user.pk %}?emoji=heart"
+                                   class="emoji-heart selected">
                             {% else %}
-                                <a href="" class="emoji-heart">
+                                <a href="{% url 'accounts:emoji_package' user.pk %}?emoji=heart" class="emoji-heart">
                             {% endif %}
                             {{ user.number_of_heart_emojis }}</a>
                             {% if does_selected_emoji.trophy %}
-                                <a href="" class="emoji-trophy selected">
+                                <a href="{% url 'accounts:emoji_package' user.pk %}?emoji=trophy"
+                                   class="emoji-trophy selected">
                             {% else %}
-                                <a href="" class="emoji-trophy">
+                                <a href="{% url 'accounts:emoji_package' user.pk %}?emoji=trophy" class="emoji-trophy">
                             {% endif %}
                             {{ user.number_of_trophy_emojis }}</a>
                             {% if does_selected_emoji.passion %}
-                                <a href="" class="emoji-passion selected">
+                                <a href="{% url 'accounts:emoji_package' user.pk %}?emoji=passion"
+                                   class="emoji-passion selected">
                             {% else %}
-                                <a href="" class="emoji-passion">
+                                <a href="{% url 'accounts:emoji_package' user.pk %}?emoji=passion"
+                                   class="emoji-passion">
                             {% endif %}
                             {{ user.number_of_passion_emojis }}</a>
                         </div>
@@ -162,9 +189,17 @@
 
                     <div id="block-teams" class="my-3">
                         <h2>تیم های مورد علاقه
-                            <a href="">لیست تیم ها</a>
+                            <a href="{% url 'teams:list_teams' 'all' %}">لیست تیم ها</a>
                         </h2>
                         <div class="row">
+                            {% for team in following_teams %}
+                                <div class="col-12">
+                                    <a href="">
+                                        <img src="{{ team.logo.url }}" alt="{{ team.name }}" width="32"
+                                             height="32"><span class="text-dark px-3">{{ team.name }}</span>
+                                    </a>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                     <div id="block-posts" class="my-3">
@@ -197,29 +232,4 @@
         </div>
     </section>
     {# endblock main #}
-{% endblock %}
-
-{% block scripts %}
-    {{ is_owner |json_script:'is_owner' }}
-    {{ is_followed |json_script:'is_followed' }}
-    {{ is_follow_requested|json_script:'is_follow_requested' }}
-    {{ does_selected_emoji.heart|json_script:'selected_heart' }}
-    {{ does_selected_emoji.trophy|json_script:'selected_trophy' }}
-    {{ does_selected_emoji.passion|json_script:'selected_passion' }}
-    {{ user.is_private|json_script:'is_private' }}
-    <script type="text/javascript">
-        const is_owner = JSON.parse(document.getElementById('is_owner').textContent)
-        let is_followed = JSON.parse(document.getElementById('is_followed').textContent)
-        let is_follow_requested = JSON.parse(document.getElementById('is_follow_requested').textContent)
-        const unfollow_url = '{% url 'accounts:user_unfollow' user.pk %}'
-        const follow_url = '{% url 'accounts:user_follow' user.pk %}'
-        let selected_heart = JSON.parse(document.getElementById('selected_heart').textContent)
-        let selected_trophy = JSON.parse(document.getElementById('selected_trophy').textContent)
-        let selected_passion = JSON.parse(document.getElementById('selected_passion').textContent)
-        const reverse_emoji_url = '{% url 'accounts:emoji_package' user.pk %}'
-        const is_private = JSON.parse(document.getElementById('is_private').textContent)
-    </script>
-    <script type="text/javascript" src="{% static 'accounts/js/base_profile.js' %}">
-    </script>
-    {% block other_scripts %}{% endblock %}
 {% endblock %}

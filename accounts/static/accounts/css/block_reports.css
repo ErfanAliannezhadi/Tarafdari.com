@@ -1,0 +1,49 @@
+.block {
+    background-color: #ffffff;
+    border: 1px solid #900000;
+    margin: 0 0 5px 0;
+    height: 66px;
+}
+
+.user-picture2 {
+    width: 64px;
+    height: 64px;
+    float: right;
+    margin: 0 0 0 10px;
+}
+
+.user-picture2 img {
+    max-width: 100%;
+    height: auto;
+}
+
+.remove {
+    height: 64px;
+    line-height: 64px;
+    float: left;
+    padding: 0 5px;
+    background-color: #900;
+    color: #ffffff;
+
+}
+
+.remove:hover {
+    color: #fff;
+}
+
+
+.details {
+    float: left;
+    height: 64px;
+    line-height: 32px;
+    margin: 0 10px;
+    font-size: 0.8em;
+}
+
+small, abbr {
+    display: block;
+}
+
+.username {
+    line-height: 64px;
+}

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UsernameField, SetPasswordForm, PasswordChangeForm
 from django.contrib.auth import password_validation
-from .models import UserModel, OTPCodeModel
+from .models import UserModel, OTPCodeModel, BlockModel
 from random import randint
 
 
@@ -49,12 +49,11 @@ class UserRegisterForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        print(user)
         user.email = UserModel.objects.normalize_email(self.cleaned_data['email'])
         user.set_password(self.cleaned_data['password2'])
         user.is_phone_verified = False
-        # otp_code = OTPCodeModel.objects.update_or_create(user=user, code=randint(100000, 999999))
-        # otp_code.send_otp_code()
+        otp_code = OTPCodeModel.objects.create(phone_number=user.phone_number, code=randint(100000, 999999))
+        otp_code.send_otp_code()
         if commit:
             user.save()
         return user
@@ -98,3 +97,12 @@ class UserProfileEditForm(forms.ModelForm):
 
 class UserPhoneVerifyForm(forms.Form):
     otp_code = forms.CharField(label='کد ارسالی', max_length=6)
+
+
+class UserBlockReportForm(forms.ModelForm):
+    class Meta:
+        model = BlockModel
+        fields = ['reason']
+        widgets = {
+            'reason': forms.RadioSelect()
+        }

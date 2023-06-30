@@ -4,7 +4,7 @@ from django.db.models import F
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.urls import reverse
 from ckeditor.fields import RichTextField
-from .utils import send_otp_code
+from kavenegar import *
 
 
 def user_profile_image_path(instance, filename):
@@ -170,8 +170,15 @@ class FollowRequestModel(models.Model):
 
 
 class BlockModel(models.Model):
+    CHOICES_OF_REASON = [
+        ('A', 'گزارش این شناسه کاربری'),
+        ('B', 'گزارش مطالب و دیدگاه‌های این کاربر'),
+        ('C', 'هیچی، فقط با این کاربر حال نمی‌کنم'),
+        ('D', 'دلایل دیگری وجود دارد')
+    ]
     from_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='blocked_by')
     to_user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='blocked_users')
+    reason = models.CharField(max_length=1, choices=CHOICES_OF_REASON)
     date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -218,8 +225,21 @@ class OTPCodeModel(models.Model):
     """
     OTP Code for user's phone number verification
     """
-    user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='otp_code', primary_key=True)
+    phone_number = models.CharField(max_length=11, primary_key=True)
     code = models.CharField(max_length=6)
 
     def send_otp_code(self):
-        return send_otp_code(phone_number=self.user.phone_number, code=self.code)
+        try:
+            api = KavenegarAPI(
+                '364172347A732F79384D46713577756E49396B384A7958694471715A32496F342F5449446970796C7872773D')
+            params = {
+                'sender': '',
+                'receptor': self.phone_number,
+                'message': f'کد تایید شما {self.code}',
+            }
+            response = api.sms_send(params=params)
+            print(response)
+        except APIException as e:
+            print(e)
+        except HTTPException as e:
+            print(e)

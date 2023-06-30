@@ -7,6 +7,7 @@
 {% block main %}
     <div class="phone-verify-form py-3 px-3">
         <form action="" method="post" novalidate>
+            {% csrf_token %}
             <div class="row py-3">
                 {% for field in form %}
                     <div class="col-12"><label>{{ field.label }}</label></div>
@@ -17,7 +18,8 @@
             </div>
             <div class="d-flex flex-row justify-content-between">
                 <div>
-                    <input id="send-again-button" class="text-center px-3" type="submit" value="ارسال مجدد">
+                    <input id="send-again-button" class="text-center px-3" type="submit" name="send-again"
+                           value="ارسال مجدد">
                 </div>
                 <div>
                     <input id="confirm-button" class="text-center px-3" type="submit" value="تایید شماره موبایل">
@@ -26,7 +28,7 @@
         </form>
     </div>
 {% endblock %}
-{% block other_scripts %}
+{% block scripts %}
     <script type="text/javascript">
         document.querySelector('#tabs ul li:nth-child(8)').className = 'px-2 active'
     </script>

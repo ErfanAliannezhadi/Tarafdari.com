@@ -1,0 +1,32 @@
+{% extends 'accounts/base_profile.html' %}
+{% load static %}
+{% block title %}طرفداری | مسدود ها{% endblock %}
+{% block other_stylesheet %}
+    <link rel="stylesheet" href="{% static 'accounts/css/block_reports.css' %}">
+{% endblock %}
+{% block main %}
+    <div style="background-color: #ffffff;padding: 10px;">
+        <h2 class="py-3 fs-4">شما این کاربران را گزارش کرده‌اید.</h2>
+        <p>همچنین کاربران مسدود شده با کادر قرمز مشخص شده‌اند.</p>
+        {% for blocked_user in blocked_users %}
+            <div class="block my-2">
+            <span class="user-picture2">
+            <a href="{{ blocked_user.to_user.get_absolute_url }}" title="مشاهده پروفایل کاربر.">
+                <img src="{{ blocked_user.to_user.profile_image.url }}" width="128" height="128">
+            </a></span>
+                <span class="username">{{ blocked_user.to_user.full_name }}</span>
+                <a href="{% url 'accounts:block-report_delete' blocked_user.to_user.pk %}" class="remove">لغو
+                    گزارش/مسدودیت</a>
+                <span class="details">
+                    <abbr>گزارش شده در {{ blocked_user.date }}</abbr>
+                    <small>دلیل: گزارش این شناسه کاربری</small>
+            </span>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        document.querySelector('#tabs ul li:nth-child(3)').className = 'px-2 active'
+    </script>
+{% endblock %}

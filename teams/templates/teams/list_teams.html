@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}تیم ها | طرفداری{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'teams/css/list_teams.css' %}">
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row gy-3 mb-3">
+            {% for league in leagues %}
+                <div class="col-3 text-center league">
+                    <a href="{{ league.get_absolute_url }}" class="px-3">{{ league.name }}</a></div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="container">
+        <div class="row gy-3">
+            {% for team in teams %}
+                <div class="col-3">
+                    <div class="card">
+                        <img src="{{ team.logo.url }}" class="d-block mx-auto mt-2" alt="{{ team.name }}" width="128"
+                             height="128">
+                        <div class="card-body">
+                            <h6 class="card-title text-center">{{ team.name }}</h6>
+                            {% if team.is_followed %}
+                                <a href="{% url 'teams:unfollow_team' team.name %}" class="unfollow-btn"
+                                   team="{{ team.name }}">توقف دنبال کردن</a>
+                            {% else %}
+                                <a href="{% url 'teams:follow_team' team.name %}" class="follow-btn"
+                                   team="{{ team.name }}">دنبال کن</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
