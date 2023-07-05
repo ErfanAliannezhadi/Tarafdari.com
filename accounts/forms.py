@@ -106,3 +106,4 @@ class UserBlockReportForm(forms.ModelForm):
         widgets = {
             'reason': forms.RadioSelect()
         }
+

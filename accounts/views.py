@@ -215,3 +215,19 @@ class UserBlockReportView(ProfileContextMixin, LoginRequiredMixin, UnBlockedRequ
         BlockModel.objects.create(from_user=self.request.user, to_user=user,
                                   reason=form.cleaned_data['reason'])
         return redirect('accounts:profile_without_pk')
+
+
+class UserFollowingListView(ListView):
+    paginate_by = 20
+    template_name = 'accounts/'
+
+    def get_queryset(self):
+        return UserModel.objects.get(pk=self.kwargs['pk']).followings.all()
+
+
+class UserFollowersListView(ListView):
+    paginate_by = 20
+    template_name = accounts
+
+    def get_queryset(self):
+        return UserModel.objects.get(pk=self.kwargs['pk']).followings.all()
